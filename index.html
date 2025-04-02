@@ -29,6 +29,9 @@
   <div class="time-container">
     Babylonian Date: <span id="babylonianDate"></span>
   </div>
+  <div class="time-container">
+    Babylonian Time: <span id="babylonianTime"></span>
+  </div>
 
   <div class="explanation">
     <h2>Understanding Babylonian Time</h2>
@@ -36,22 +39,36 @@
   </div>
 
   <script>
-    function calculateBabylonianDate() {
+    function calculateBabylonianDateAndTime() {
+      // Reference start date for the Babylonian calendar
       const startDate = new Date('2025-01-29T12:37:00Z'); // First new moon of Babylonian calendar (e.g., Šabātu)
       const monthNames = ["Nisannu", "Ayyāru", "Simānu", "Dûzu", "Abu", "Ulūlu", "Tashrītu", "Araḫsamna", "Kislimu", "Ṭebētu", "Šabātu", "Addaru"];
+      
+      // Calculate the current date and time
       const now = new Date();
       const diffInMillis = now - startDate;
       const daysSinceStart = Math.floor(diffInMillis / (1000 * 60 * 60 * 24)); // Number of days since the first moon
 
-      const lunarMonthLength = 29.5; // Average length of a Babylonian month (29.5 days)
+      // Average lunar month length (29.5 days)
+      const lunarMonthLength = 29.5;
       const currentMonthIndex = Math.floor(daysSinceStart / lunarMonthLength) % 12; // Find the current month based on the days passed
       const currentMonthName = monthNames[currentMonthIndex];
-      const currentDay = (daysSinceStart % lunarMonthLength) + 1; // Day within the current month
+      
+      // Calculate the day of the current month
+      const currentDay = Math.floor(daysSinceStart % lunarMonthLength) + 1;
 
-      document.getElementById("babylonianDate").textContent = `${currentMonthName} ${Math.round(currentDay)}, 2025`;
+      // Babylonian time: 12-hour cycle for day and night
+      const babylonianHour = now.getUTCHours() % 12;
+      const babylonianMinute = now.getUTCMinutes();
+      const babylonianTime = `${babylonianHour}:${babylonianMinute < 10 ? '0' : ''}${babylonianMinute} ${babylonianHour < 6 ? 'AM' : 'PM'}`;
+
+      // Update the Babylonian date and time on the page
+      document.getElementById("babylonianDate").textContent = `${currentMonthName} ${currentDay}, 2025`;
+      document.getElementById("babylonianTime").textContent = babylonianTime;
     }
     
-    setInterval(calculateBabylonianDate, 1000);
+    // Update every second to keep the time and date accurate
+    setInterval(calculateBabylonianDateAndTime, 1000);
   </script>
 </body>
 </html>
