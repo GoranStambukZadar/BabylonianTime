@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -37,25 +37,18 @@
 
   <script>
     function calculateBabylonianDate() {
-      const newMoons = [
-        new Date('2025-01-29T12:37:00Z'), // Start of Šabātu
-        new Date('2025-03-01T01:19:00Z')  // Start of Addaru
-      ];
+      const startDate = new Date('2025-01-29T12:37:00Z'); // First new moon of Babylonian calendar (e.g., Šabātu)
       const monthNames = ["Nisannu", "Ayyāru", "Simānu", "Dûzu", "Abu", "Ulūlu", "Tashrītu", "Araḫsamna", "Kislimu", "Ṭebētu", "Šabātu", "Addaru"];
-      
       const now = new Date();
-      let babylonianMonth = "";
-      let babylonianDay = 0;
-      
-      for (let i = newMoons.length - 1; i >= 0; i--) {
-        if (now >= newMoons[i]) {
-          babylonianMonth = monthNames[10 + i]; // Šabātu or Addaru
-          babylonianDay = Math.floor((now - newMoons[i]) / (1000 * 60 * 60 * 24)) + 1;
-          break;
-        }
-      }
-      
-      document.getElementById("babylonianDate").textContent = `${babylonianMonth} ${babylonianDay}, 2025`;
+      const diffInMillis = now - startDate;
+      const daysSinceStart = Math.floor(diffInMillis / (1000 * 60 * 60 * 24)); // Number of days since the first moon
+
+      const lunarMonthLength = 29.5; // Average length of a Babylonian month (29.5 days)
+      const currentMonthIndex = Math.floor(daysSinceStart / lunarMonthLength) % 12; // Find the current month based on the days passed
+      const currentMonthName = monthNames[currentMonthIndex];
+      const currentDay = (daysSinceStart % lunarMonthLength) + 1; // Day within the current month
+
+      document.getElementById("babylonianDate").textContent = `${currentMonthName} ${Math.round(currentDay)}, 2025`;
     }
     
     setInterval(calculateBabylonianDate, 1000);
